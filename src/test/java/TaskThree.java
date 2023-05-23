@@ -10,6 +10,9 @@ public class TaskThree {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
+        var avgSemesterLength = (Double) em.createQuery("select avg(numberOfSemesters) from Subject").getSingleResult();
+        System.out.println("Average semester length for all subjects is: " + avgSemesterLength);
+
         tx.commit();
         em.close();
     }
