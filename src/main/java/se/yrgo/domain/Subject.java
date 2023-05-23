@@ -37,4 +37,9 @@ public class Subject {
     public Set<Tutor> getTutors() {
         return this.tutors;
     }
+
+    @Override
+    public String toString() {
+        return subjectName;
+    }
 }
