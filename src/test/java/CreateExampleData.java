@@ -1,12 +1,15 @@
-import java.util.Set;
+import java.util.List;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import se.yrgo.domain.Student;
+import se.yrgo.domain.Subject;
 import se.yrgo.domain.Tutor;
-
+/*
+ * Change hibernate.hbm2ddl.auto to 'create' before running this main()
+ */
 public class CreateExampleData {
     public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("databaseConfig");
@@ -14,37 +17,41 @@ public class CreateExampleData {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
-        // Tutor t1 = new Tutor("ABC123", "Teacher 1", 290000);
-        // em.persist(t1);
+        var tutors = List.of(
+            new Tutor("ABC234", "Hampus",1337),
+            new Tutor("CDE567", "Nahid",13337));
 
-        // Student s1 = new Student("Student1", "1-STU-2019");
-        // t1.addStudentToTeachingGroup(s1);
+        var students = List.of(
+            new Student("Emil", "1-HOW-2017"),
+            new Student("Anders", "2-BAJS-2018"),
+            new Student("Bosse", "2-KISS-2018"),
+            new Student("David", "2-SAN-2018"),
+            new Student("Rasmus", "3-NIK-2019"));
 
-        // Student s2 = new Student("Student2", "2-STU-2018");
-        // t1.addStudentToTeachingGroup(s2);
-
-        // Student s3 = new Student("Student3", "3-STU-2017");
-        // t1.addStudentToTeachingGroup(s3);
-
-        // em.persist(s1);
-        // em.persist(s2);
-        // em.persist(s3);
-
-        // Set<Student> allStudents = t1.getTeachingGroup();
-        // System.out.println(allStudents.size());
-
-        Tutor tutor = em.find(Tutor.class, 1);
-        System.out.println(tutor);
-
-        Set<Student> students = tutor.getTeachingGroup();
-        for (Student s : students) {
-            System.out.println(s);
+        for (var tutor : tutors) {
+            em.persist(tutor);
         }
 
-        Student student = em.find(Student.class, 2);
-        System.out.println(student);
+        for (var student : students) {
+            em.persist(student);
+            tutors.get(1).addStudentToTeachingGroup(student);
+        }
 
-        em.remove(student);
+        var subjects = List.of(
+            new Subject("Java", 3),
+            new Subject("Serverprogramming", 6),
+            new Subject("Clientprogramming", 2),
+            new Subject("Development tools", 7)
+        );
+
+        for (var subject : subjects) {
+            em.persist(subject);
+        }
+
+        tutors.get(0).addSubjectsToTeach(subjects.get(0));
+        tutors.get(0).addSubjectsToTeach(subjects.get(2));
+        tutors.get(1).addSubjectsToTeach(subjects.get(1));
+        tutors.get(1).addSubjectsToTeach(subjects.get(3));
 
         tx.commit();
         em.close();
