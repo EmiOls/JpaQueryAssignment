@@ -10,6 +10,9 @@ public class TaskFour {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
+        var maxSalary = (int) em.createQuery("select max(salary) from Tutor").getSingleResult();
+        System.out.println("The highest recorded salary is: " + maxSalary);
+
         tx.commit();
         em.close();
     }
