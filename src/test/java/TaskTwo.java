@@ -13,6 +13,8 @@ public class TaskTwo {
         tx.begin();
 
         var query = em.createQuery("select s.name, t.name from Tutor t join t.teachingGroup s");
+        
+        @SuppressWarnings("unchecked")
         List<Object[]> results = query.getResultList();
 
         for (var result : results) {
