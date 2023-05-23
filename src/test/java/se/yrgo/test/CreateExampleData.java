@@ -1,3 +1,4 @@
+package se.yrgo.test;
 import java.util.List;
 
 import jakarta.persistence.EntityManager;

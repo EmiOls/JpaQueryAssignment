@@ -1,22 +1,29 @@
+package se.yrgo.test;
+import se.yrgo.domain.Subject;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
-import se.yrgo.domain.Tutor;
 
-public class TaskFive {
+public class TaskOne {
     public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("databaseConfig");
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
-        var highIncomeTutors = em.createNamedQuery("searchTutorWithSalaryAbove", Tutor.class).setParameter("salary", 10000).getResultList();
+        var subjectDatabaseID = 9;
+        var subject = em.find(Subject.class, subjectDatabaseID);
 
-        for(var tutor : highIncomeTutors) {
-            System.out.println(tutor);
+        var query = em.createQuery(
+                "select t.teachingGroup from Tutor t where :subject member of t.subjectsToTeach")
+                .setParameter("subject", subject);
+
+        var students = query.getResultList();
+        for (var student : students) {
+            System.out.println(student);
         }
-
         tx.commit();
         em.close();
     }

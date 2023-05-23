@@ -1,27 +1,25 @@
-import se.yrgo.domain.Subject;
+package se.yrgo.test;
+import java.util.List;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 
-public class TaskOne {
+public class TaskTwo {
     public static void main(String[] args) {
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("databaseConfig");
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
-        var subjectDatabaseID = 9;
-        var subject = em.find(Subject.class, subjectDatabaseID);
+        var query = em.createQuery("select s.name, t.name from Tutor t join t.teachingGroup s");
 
-        var query = em.createQuery(
-                "select t.teachingGroup from Tutor t where :subject member of t.subjectsToTeach")
-                .setParameter("subject", subject);
+        @SuppressWarnings("unchecked")
+        List<Object[]> results = query.getResultList();
 
-        var students = query.getResultList();
-        for (var student : students) {
-            System.out.println(student);
+        for (var result : results) {
+            System.out.printf("Student: %s, Teacher: %s%n", (String) result[0], (String) result[1]);
         }
         tx.commit();
         em.close();
